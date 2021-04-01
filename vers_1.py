@@ -1,6 +1,36 @@
 import time
 from icecream import ic
 import sys
+from turtle import *
+
+
+
+t = Turtle()
+
+t.screen.setup(1200, 1000)
+t.screen.title("Welcome to the lab 2!")
+t.speed(0)
+
+m = Turtle()
+s = Turtle()
+g = Turtle()
+m.speed(0)
+s.speed(0)
+g.speed(0)
+m.color('red')
+s.color('blue')
+g.color('green')
+
+m.up()
+m.goto(-600, 0)
+s.up()
+s.goto(-600, 0)
+g.up()
+g.goto(-600, 0)
+m.down()
+s.down()
+g.down()
+
 
 
 
@@ -68,8 +98,7 @@ def proliferation_virus(all_people, k_recuperation, length_vir):
         time.sleep(1)
 
 
-
-def proliferation_virus_2(all_people, k_recuperation, length_vir):
+def proliferation_virus_05(k_recuperation, length_vir):
     """
     all_people - количество больных
     k_recuperation - коэф. выздоровления
@@ -81,40 +110,37 @@ def proliferation_virus_2(all_people, k_recuperation, length_vir):
     rec_people - выздоровевшие
     """
     infected_people = [0 for i in range(length_vir)]
-    none_infected_people = [all_people for i in range(length_vir)]
+    none_infected_people = [100 for i in range(length_vir)]
     rec_people = [0 for i in range(length_vir)]
     # count_contakt = 0.0015 
     # count_contakt = 0.0007
-    count_contakt = 0.00025
+    count_contakt = 1.001
     n_day = length_vir
-    infected_people.append(3)
-    none_infected_people.append(all_people)
+    infected_people.append(0.005)
+    none_infected_people.append(100)
     rec_people.append(0)
 
     while True:
         tmp_infected_people = count_contakt * infected_people[n_day] * none_infected_people[n_day] - \
-            k_recuperation * infected_people[n_day - 1] + infected_people[n_day]
+            k_recuperation * infected_people[n_day - length_vir] + infected_people[n_day]
 
         if tmp_infected_people < 0:
             infected_people.append(0)
         else:
-            infected_people.append(round(tmp_infected_people))
+            infected_people.append(tmp_infected_people)
 
 
         tmp_none_infected_people = none_infected_people[n_day] - count_contakt * infected_people[n_day] * \
             none_infected_people[n_day]
 
-        none_infected_people.append(round(tmp_none_infected_people))
+        none_infected_people.append(tmp_none_infected_people)
 
-        tmp_rec_people = rec_people[n_day] + k_recuperation * infected_people[n_day - 1]  #  rec_people[n_day - length_vir]
+        tmp_rec_people = rec_people[n_day] + k_recuperation * infected_people[n_day - length_vir]  #  rec_people[n_day - length_vir]
 
-        rec_people.append(round(tmp_rec_people))
+        rec_people.append(tmp_rec_people)
 
         # count_contakt = # fix
         # k_recuperation = #fix
-        n_day += 1
-
-
 
 
         print("infected_people: ", infected_people)
@@ -127,13 +153,14 @@ def proliferation_virus_2(all_people, k_recuperation, length_vir):
         if none_infected_people[n_day] < 1:
             print("All people infected")
 
-        if rec_people[n_day] > all_people:
+        if rec_people[n_day] > 100:
             print("All people recuperation")
             break
 
-
+        n_day += 1
 
         time.sleep(1)
+
 
 
 
@@ -153,7 +180,7 @@ def proliferation_virus_3(all_people, k_recuperation, length_vir):
     rec_people = [0 for i in range(length_vir)]
     # count_contakt = 0.0015 
     # count_contakt = 0.0007
-    count_contakt = 0.25
+    count_contakt = 0.05
     n_day = length_vir
     infected_people.append(round(3 if all_people*0.0001 < 1 else all_people*0.0001))
     none_infected_people.append(all_people)
@@ -186,6 +213,10 @@ def proliferation_virus_3(all_people, k_recuperation, length_vir):
         print("rec_people: ", rec_people)
         print("n_day: ", n_day - length_vir)
 
+        m.goto(-600+n_day, none_infected_people[n_day]/1600)
+        s.goto(-600+n_day, infected_people[n_day]/1600)
+        g.goto(-600+n_day, rec_people[n_day]/1600)
+
         print("\n")
 
         if none_infected_people[n_day] < 1:
@@ -197,7 +228,7 @@ def proliferation_virus_3(all_people, k_recuperation, length_vir):
 
         n_day += 1
 
-        time.sleep(1)
+        #time.sleep(1)
 
 
 def proliferation_virus_4(all_people, k_recuperation, length_vir):
@@ -223,10 +254,20 @@ def proliferation_virus_4(all_people, k_recuperation, length_vir):
 
 
 def main():
+    
+    t.screen.setup(1200, 1000)
+    t.screen.title("Welcome to the lab 3!")
+    t.speed(0)
+    t.hideturtle()
+
     # proliferation_virus(600000, 0.01, 14)
+    proliferation_virus_05(0.01, 14)
     # proliferation_virus_2(1000, 0.01, 14)
     proliferation_virus_3(600000, 0.01, 14)
     # proliferation_virus_4(600000, 0.01, 14)
+
+    t.screen.exitonclick()
+    t.screen.mainloop()
 
 
 if __name__ == "__main__":
