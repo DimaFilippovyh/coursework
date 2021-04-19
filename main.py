@@ -75,16 +75,23 @@ def graf_param_for_A():
     for i in np.arange(0.02, 2.00, 0.02):
         lst_param = fv.proliferation_virus_for_par(0.005, 14, i)
         cor.goto(x_cor, lst_param[0] * 400)
-        cor.dot(7, "red")
-        cor.write(str(lst_param[0]), font=("Arial", 10, "normal"))
+        cor.dot(2, "red")
+        if x_cor % 70 == 0:
+            cor.write(f"{lst_param[0]:4.3}", font=("Arial", 10, "normal"))
 
         cor.goto(x_cor, lst_param[1] / 3)
-        cor.dot(15, "green")
-        cor.write(str(lst_param[1]), font=("Arial", 10, "normal"))
+        cor.dot(6, "green")
+        if x_cor % 70 == 0:
+            cor.write(lst_param[1], font=("Arial", 10, "normal"))
 
         cor.goto(x_cor, lst_param[2] / 3)
-        cor.dot(10, "blue")
-        cor.write(str(lst_param[2]), font=("Arial", 10, "normal"))
+        cor.dot(4, "blue")
+        if x_cor % 70 == 0:
+            cor.write(lst_param[2], font=("Arial", 10, "normal"))
+
+        if x_cor % 70 == 0:
+            cor.goto(x_cor, -50)
+            cor.write(i, font=("Arial", 10, "normal"))
 
         x_cor += 10
         cor.goto(x_cor, 0)
@@ -100,13 +107,24 @@ def graf_param_for_B():
     for i in np.arange(0.001, 2.00, 0.001):
         lst_param = fv.proliferation_virus_for_par(i, 14, 0.04)
         cor.goto(x_cor, lst_param[0] * 400)
-        cor.dot(7, "red")
+        cor.dot(2, "red")
+        if x_cor % 30 == 0:
+            cor.write(f"{lst_param[0]:4.3}", font=("Arial", 10, "normal"))
 
         cor.goto(x_cor, lst_param[1] / 3)
-        cor.dot(15, "green")
+        cor.dot(6, "green")
+        if x_cor % 70 == 0:
+            cor.write(lst_param[1], font=("Arial", 10, "normal"))
 
         cor.goto(x_cor, lst_param[2] / 3)
-        cor.dot(10, "blue")
+        cor.dot(4, "blue")
+        if x_cor % 30 == 0:
+            cor.write(lst_param[2], font=("Arial", 10, "normal"))
+
+        if x_cor % 30 == 0:
+            cor.goto(x_cor, -50)
+            cor.write(i, font=("Arial", 10, "normal"))
+
         x_cor += 10
         cor.goto(x_cor, 0)
 
@@ -121,16 +139,23 @@ def graf_param_for_K():
     for i in range(1, 20, 1):
         lst_param = proliferation_virus_for_par(0.005, i, 0.04)
         cor.goto(x_cor, lst_param[0] * 400)
-        cor.dot(7, "red")
-        cor.write(str(lst_param[0]), font=("Arial", 10, "normal"))
+        cor.dot(2, "red")
+        if x_cor % 70 == 0:
+            cor.write(f"{lst_param[0]:4.3}", font=("Arial", 10, "normal"))
 
         cor.goto(x_cor, lst_param[1] / 3)
-        cor.dot(15, "green")
-        cor.write(str(lst_param[1]), font=("Arial", 10, "normal"))
+        cor.dot(6, "green")
+        if x_cor % 70 == 0:
+            cor.write(lst_param[1], font=("Arial", 10, "normal"))
 
         cor.goto(x_cor, lst_param[2] / 3)
-        cor.dot(10, "blue")
-        cor.write(str(lst_param[2]), font=("Arial", 10, "normal"))
+        cor.dot(4, "blue")
+        if x_cor % 70 == 0:
+            cor.write(lst_param[2], font=("Arial", 10, "normal"))
+
+        if x_cor % 70 == 0:
+            cor.goto(x_cor, -50)
+            cor.write(i, font=("Arial", 10, "normal"))
 
         x_cor += 10
         cor.goto(x_cor, 0)
@@ -344,7 +369,7 @@ def main():
         1. Рисунок с параметром А
         2. Рисунок с параметром В
         3. Рисунок с параметром К
-        4. Перебор параметров
+        4. Новое выздоровление
         5. Отрисовка графиков
         """)
         n = int(input("Что хотите увидеть? \n"))
