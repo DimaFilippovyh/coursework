@@ -8,6 +8,11 @@ import numpy as np
 import func_vir as fv
 
 
+
+WIDTH = 600
+HEIGHT = 500
+
+
 class Hands:
     def __init__(self, pensize, color, unit_angle, leng):
         self.pensize = pensize
@@ -20,14 +25,14 @@ def draw_coord():
     cor = Turtle()
     cor.speed(0)
     cor.up()
-    cor.goto(0, -600)
+    cor.goto(0, -WIDTH)
     cor.down()
-    cor.goto(0, 600)
+    cor.goto(0, WIDTH)
 
     cor.up()
-    cor.goto(-600, 0)
+    cor.goto(-WIDTH, 0)
     cor.down()
-    cor.goto(600, 0)
+    cor.goto(WIDTH, 0)
 
 
 def draw_line(turt, lst_point):
@@ -35,7 +40,7 @@ def draw_line(turt, lst_point):
     turt.speed(0)
     turt.color('red')
     turt.up()
-    turt.goto(-600, 0)
+    turt.goto(-WIDTH, 0)
     turt.down()
 
 
@@ -52,9 +57,9 @@ r.color('green')
 inf.up()
 ni.up()
 r.up()
-inf.goto(-600, 0)
-ni.goto(-600, 400)
-r.goto(-600, 0)
+inf.goto(-WIDTH, 0)
+ni.goto(-WIDTH, HEIGHT)
+r.goto(-WIDTH, 0)
 inf.down()
 ni.down()
 r.down()
@@ -161,6 +166,57 @@ def graf_param_for_K():
         cor.goto(x_cor, 0)
 
 
+def graf_param_all(param):
+    if param == "A":
+        nach = 0.02
+        end = 2.00
+        st = 0.02
+    elif param == "B":
+        nach = 0.001
+        end = 2.00
+        st = 0.001
+    else:
+        nach = 1
+        end = 20
+        st = 1
+
+    cor = Turtle()
+    cor.speed(0)
+    cor.up()
+    x_cor = -WIDTH
+    cor.goto(x_cor, 0)
+    cor.down()
+
+    lst_param = []
+
+    for i in range(nach, end, st):
+        if param == "A":
+            lst_param.append(proliferation_virus_for_par(0.005, 14, i).append(i))
+        elif param == "B":
+            lst_param.append(proliferation_virus_for_par(i, 14, 0.04).append(i))
+        else:
+            lst_param.append(proliferation_virus_for_par(0.005, i, 0.04).append(i))
+
+
+    def temp_func_draw(num, size, color):
+        cor.up()
+        x_cor = -WIDTH
+        cor.goto(x_cor, 0)
+        for i in lst_param:
+            cor.goto(x_cor, lst_param[num] * HEIGHT) # ???
+            cor.down()
+            cor.dot(size, color)
+            if x_cor % 70 == 0:
+                cor.write(lst_param[num], font=("Arial", 10, "normal"))
+            x_cor += 10
+
+    
+    temp_func_draw(0, 2, 'red')
+    temp_func_draw(1, 6, 'green')
+    temp_func_draw(2, 4, 'blue')
+    temp_func_draw(3, 4, 'black') # ????
+
+
 def enum_param():
     pass
 
@@ -265,9 +321,9 @@ def proliferation_virus(k_recuperation, length_vir):
         print("n_day: ", n_day - length_vir)
         print("\n")
 
-        ni.goto(-600 + n_day, none_infected_people[n_day] * 400)
-        inf.goto(-600 + n_day, infected_people[n_day] * 400)
-        r.goto(-600 + n_day, rec_people[n_day] * 400)
+        ni.goto(-WIDTH + n_day, none_infected_people[n_day] * HEIGHT)
+        inf.goto(-WIDTH + n_day, infected_people[n_day] * HEIGHT)
+        r.goto(-WIDTH + n_day, rec_people[n_day] * HEIGHT)
 
         if none_infected_people[n_day] < 0.002:
             print("All people infected")
@@ -338,9 +394,9 @@ def proliferation_virus_test_rec(length_vir):
         print("n_day: ", n_day - length_vir)
         print("\n")
 
-        ni.goto(-600 + n_day, none_infected_people[n_day] * 400)
-        inf.goto(-600 + n_day, infected_people[n_day] * 400)
-        r.goto(-600 + n_day, rec_people[n_day] * 400)
+        ni.goto(-WIDTH + n_day, none_infected_people[n_day] * HEIGHT)
+        inf.goto(-WIDTH + n_day, infected_people[n_day] * HEIGHT)
+        r.goto(-WIDTH + n_day, rec_people[n_day] * HEIGHT)
 
         if none_infected_people[n_day] < 0.002:
             print("All people infected")
@@ -357,7 +413,7 @@ def proliferation_virus_test_rec(length_vir):
 
 def main():
     t = Turtle()
-    t.screen.setup(1200, 1000)
+    t.screen.setup(WIDTH*2, HEIGHT*2)
     t.screen.title("Welcome to the coursework!")
     t.speed(0)
     t.hideturtle()
