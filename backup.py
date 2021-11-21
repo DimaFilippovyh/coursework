@@ -1,14 +1,14 @@
 import os
 import time
-from icecream import ic
+# from icecream import ic
 import sys
 from turtle import *
 import pyautogui
 import numpy as np
 import func_vir as fv
 
-WIDTH = 600
-HEIGHT = 500
+WIDTH = 800
+HEIGHT = 450
 
 
 class Lines:
@@ -16,19 +16,43 @@ class Lines:
         self.color = color
 
 
-
-def draw_coord():
+def draw_coord(X_SCALE, Y_SCALE):
+    Y_SCALE /= 5 
+    X_SCALE *= 100 
     cor = Turtle()
     cor.speed(0)
     cor.up()
-    cor.goto(0, -HEIGHT)
-    cor.down()
-    cor.goto(0, HEIGHT)
+    for i in range(6):
+        cor.goto(-WIDTH, -HEIGHT + 20 + i * Y_SCALE)
+        cor.up()
+        cor.goto(-WIDTH - 25, -HEIGHT + 20 + i * Y_SCALE)
+        cor.write(str(i*20), font=("Arial", 16, "normal"))
+        cor.goto(-WIDTH, -HEIGHT + 20 + i * Y_SCALE)
+        cor.down()
 
-    cor.up()
-    cor.goto(-WIDTH, 0)
-    cor.down()
-    cor.goto(WIDTH, 0)
+    cor.setheading(90)
+    cor.stamp()
+
+    for i in range(10):
+        cor.goto(-WIDTH + i * X_SCALE, -HEIGHT + 20)
+        print(-WIDTH + i * X_SCALE)
+        cor.up()
+        cor.goto(-WIDTH + i * X_SCALE, -HEIGHT)
+        cor.write(str(i*100), font=("Arial", 16, "normal"))
+        cor.goto(-WIDTH + i * X_SCALE, -HEIGHT + 20)
+        cor.down()
+
+    cor.setheading(0)
+    cor.stamp()
+
+    # cor.goto(-WIDTH, -HEIGHT)
+    # cor.down()
+    # cor.goto(-WIDTH, HEIGHT)
+
+    # cor.up()
+    # cor.goto(-WIDTH, -HEIGHT + 20)
+    # cor.down()
+    # cor.goto(WIDTH, -HEIGHT + 20)
 
 
 def draw_line(lst_point, line_cls):
@@ -37,11 +61,14 @@ def draw_line(lst_point, line_cls):
     turt.up()
     turt.hideturtle()
 
-    Y_SCALE = HEIGHT * 0.9
+    print(lst_point[-1])
+
+    Y_SCALE = HEIGHT * 2 * 0.93
     X_SCALE = (WIDTH * 2 / lst_point[5]) * 0.9
     flag = False
+    draw_coord(X_SCALE, Y_SCALE)
 
-    def tmp_func(k):
+    def tmp_func(k, text):
         nonlocal flag
         turt.up()
         x_cor = -WIDTH
@@ -49,16 +76,18 @@ def draw_line(lst_point, line_cls):
         turt.color(line_cls[k].color)
         for i, p in enumerate(lst_point[k]):
             x_cor += X_SCALE
-            if i % 15 == 0:
-                turt.goto(x_cor, p * Y_SCALE)
+            if i % 5 == 0:
+                turt.goto(x_cor, -HEIGHT + 20 + p * Y_SCALE)
                 turt.down()
                 if i >= lst_point[4] and k == 0 and flag is False:
-                    turt.write(str(lst_point[3]) + "___" + str(lst_point[4]), font=("Arial", 10, "normal"))
+                    turt.write(str(f"Пик больных в %: {int(round(lst_point[3],2) * 100)}") + "__ День: " + str(lst_point[4]), font=("Arial", 16, "normal"))
                     flag = True
 
-    tmp_func(0)
-    tmp_func(1)
-    tmp_func(2)
+        turt.write(text, font=("Arial", 20, "normal"))
+
+    tmp_func(0, "           Зараженные люди")
+    tmp_func(1, "           Здоровые люди")
+    tmp_func(2, "           Переболевшие люди")
 
 
 def graf_param_all(param, rec=0.005, leng=14, con=0.04):
@@ -87,6 +116,8 @@ def graf_param_all(param, rec=0.005, leng=14, con=0.04):
     if param == "A":
         for i in np.arange(nach, end, st):
             tmp = proliferation_virus(rec, leng, i)[3:]
+            if tmp[0] > 1:
+                break
             tmp.append(i)
             lst_param.append(tmp)
     elif param == "B":
@@ -107,35 +138,61 @@ def graf_param_all(param, rec=0.005, leng=14, con=0.04):
         x_cor = -WIDTH
         cor.goto(x_cor, 0)
         Y_SCALE = max(lst_param, key=lambda x: abs(x[num]))
-        Y_SCALE = (HEIGHT / abs(Y_SCALE[num])) * 0.9
+        Y_SCALE = (HEIGHT * 2 / abs(Y_SCALE[num])) * 0.9
+        # if param == "K":
+        #     if num == 1:
+        #         Y_SCALE *= 1/3
+        #     elif num == 0:
+        #         Y_SCALE *= 2/3
+
         X_SCALE = (WIDTH * 2 / len(lst_param)) * 0.8
         for ind, i in enumerate(lst_param):
             x_cor += X_SCALE
             if num != 3:
-                cor.goto(x_cor, i[num] * Y_SCALE)
+                cor.goto(x_cor, -HEIGHT + i[num] * Y_SCALE)
             else:
-                cor.goto(x_cor, 0)
+                cor.goto(x_cor, -HEIGHT)
             cor.down()
             cor.color(color)
             cor.dot(size, color)
-            if ind % 7 == 0:
+            if ind % 2 == 0:
                 if num == 2 and i[num] == 8000:
-                    cor.write(f"+inf", font=("Arial", 10, "normal"))
+                    # cor.goto(x_cor, -HEIGHT + i[num] * Y_SCALE + 20)
+                    cor.write(f"+inf", font=("Arial", 18, "normal"))
                 elif num == 0 or (num == 3 and param != "K"):
-                    cor.write(f"{i[num]:5.4}", font=("Arial", 10, "normal"))
+                    # if num == 0 and (ind == 36 or ind == 6): # для вывода первой зеленой точки
+                    #     cor.up()
+                    #     cor.goto(x_cor, -HEIGHT + i[num] * Y_SCALE + 15)
+                    #     cor.write(f"{round(i[num],3)}", font=("Arial", 17, "normal"))
+                    #     cor.goto(x_cor, -HEIGHT + i[num] * Y_SCALE)
+                    #     cor.down()
+                    # else:
+                    cor.write(f"{round(i[num],3)}", font=("Arial", 18, "normal"))
                 else:
-                    cor.write(i[num], font=("Arial", 10, "normal"))
+                    # if num == 1 and ind == 36: # для вывода первой зеленой точки
+                    #     cor.up()
+                    #     cor.goto(x_cor, -HEIGHT + i[num] * Y_SCALE - 15)
+                    #     cor.write(i[num], font=("Arial", 17, "normal"))
+                    #     cor.goto(x_cor, -HEIGHT + i[num] * Y_SCALE)
+                    #     cor.down()
+                    # else:
+                        # cor.write(i[num], font=("Arial", 17, "normal"))
+                    cor.write(i[num], font=("Arial", 18, "normal"))
             # x_cor += 10
-        cor.write(text, font=("Arial", 10, "normal"))
+        # if param == "B" and num == 2:  # просто для вывода красивой картинки потом убрать
+        #     cor.up()
+        #     x, y = cor.position()
+        #     cor.goto(x, y-20)
+        # if param == "B" and num == 0:  # просто для вывода красивой картинки потом убрать
+        #     cor.up()
+        #     x, y = cor.position()
+        #     cor.goto(x, y+15)
+        cor.write(text, font=("Arial", 20, "normal"))
 
     temp_func_draw(0, 2, 'red', "           Макс. людей заразилось")
     temp_func_draw(1, 6, 'green', "           День в который макс. заразилось")
     temp_func_draw(2, 4, 'blue', "           Всего дней до выздоровления")
     temp_func_draw(3, 4, 'black', "           Значение параметра")
-
-
-def enum_param(): # Доделать
-    pass
 
 
 def proliferation_virus(k_recuperation, length_vir, count_contakt=0.04):
@@ -178,11 +235,15 @@ def proliferation_virus(k_recuperation, length_vir, count_contakt=0.04):
             day_max, max_infected = n_day, infected_people[n_day]
             flag = True
 
-        # print("infected_people: ", infected_people)
+        # print("infected_people: ", infected_people[n_day])
         # print("none_infected_people: ", none_infected_people)
         # print("rec_people: ", rec_people)
         # print("n_day: ", n_day - length_vir)
         # print("\n")
+
+        # if infected_people[n_day] > 1:
+        #     print("All people infected")
+        #     break
 
         if none_infected_people[n_day] < 0.002:
             print("All people infected")
@@ -274,11 +335,11 @@ def proliferation_virus_test_rec(length_vir):
             inf.write(str(max_infected) + "___" + str(n_day), font=("Arial", 10, "normal"))
             flag = True
 
-        # print("infected_people: ", infected_people)
-        # print("none_infected_people: ", none_infected_people)
-        # print("rec_people: ", rec_people)
-        # print("n_day: ", n_day - length_vir)
-        # print("\n")
+        print("infected_people: ", infected_people)
+        print("none_infected_people: ", none_infected_people)
+        print("rec_people: ", rec_people)
+        print("n_day: ", n_day - length_vir)
+        print("\n")
 
         ni.goto(-WIDTH + n_day, none_infected_people[n_day] * HEIGHT)
         inf.goto(-WIDTH + n_day, infected_people[n_day] * HEIGHT)
@@ -303,7 +364,10 @@ def main():
     t.screen.title("Welcome to the coursework!")
     t.speed(0)
     t.hideturtle()
-    draw_coord()
+    # draw_coord()
+    t.goto(0, -HEIGHT)
+    t.dot(5)
+
 
     inf = Lines('red')
     ni = Lines('blue')
@@ -322,7 +386,7 @@ def main():
         n = int(input("Что хотите увидеть? \n"))
 
         t.screen.clearscreen()
-        draw_coord()
+        # draw_coord()
 
         if n == 1:
             graf_param_all("A")
